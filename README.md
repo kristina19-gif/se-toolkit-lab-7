@@ -91,3 +91,39 @@ By the end of this lab, you should be able to say:
 2. [Backend Integration](./lab/tasks/required/task-2.md) — P0: slash commands + real data
 3. [Intent-Based Natural Language Routing](./lab/tasks/required/task-3.md) — P1: LLM tool use
 4. [Containerize and Document](./lab/tasks/required/task-4.md) — P3: containerize + deploy
+
+## Deploy
+
+The repository includes a dedicated `bot/` project that supports both offline verification and the real Telegram runtime.
+
+For local bot development, configure `.env.bot.secret` with `BOT_TOKEN`, `LMS_API_URL`, `LMS_API_KEY`, `LLM_API_KEY`, `LLM_API_BASE_URL`, and `LLM_API_MODEL`.
+
+For Docker deployment on the VM, configure `.env.docker.secret` with `BOT_TOKEN`, `LMS_API_KEY`, `LLM_API_KEY`, `LLM_API_BASE_URL`, and `LLM_API_MODEL`. The optional `BOT_LMS_API_URL` defaults to `http://backend:8000`, which is the correct in-network URL for the containerized bot.
+
+Build and start the whole stack on the VM:
+
+```terminal
+cd ~/se-toolkit-lab-7
+docker compose --env-file .env.docker.secret up --build -d
+docker compose --env-file .env.docker.secret ps
+```
+
+Verify the deployment:
+
+```terminal
+curl -sf http://localhost:42002/docs >/dev/null && echo backend_ok
+docker compose --env-file .env.docker.secret logs bot --tail 30
+```
+
+Useful bot checks:
+
+```terminal
+cd ~/se-toolkit-lab-7/bot
+uv sync
+uv run bot.py --test "/start"
+uv run bot.py --test "/labs"
+uv run bot.py --test "/scores lab-04"
+uv run bot.py --test "which lab has the lowest pass rate?"
+```
+
+Inside Docker, the bot reaches the backend at `http://backend:8000` and the Qwen proxy at `http://host.docker.internal:42005/v1`.

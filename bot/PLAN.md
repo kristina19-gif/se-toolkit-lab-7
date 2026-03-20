@@ -1,0 +1,5 @@
+# Bot Implementation Plan
+
+This bot is built around testable handlers rather than Telegram-specific logic. The core command handlers return plain text and depend only on small service objects, which means the same logic works in three places: `--test` mode, automated tests, and the real Telegram bot. That separation reduces debugging time because we can tell whether a problem is in the business logic, the backend API call, or the Telegram transport.
+
+Task 1 is the scaffold: create the `bot/` project, load configuration from `.env.bot.secret`, implement `bot.py`, and add command handlers that can run without Telegram. Task 2 adds a backend client and wires `/health`, `/labs`, and `/scores` to real API data with friendly error messages. Task 3 adds an LLM router that exposes all backend endpoints as tools and supports multi-step reasoning for plain-language questions, plus inline keyboard buttons for discoverability. Task 4 containerizes the bot, adds it to `docker-compose.yml`, and documents deployment so the bot can run alongside the backend on the VM and survive reboots.
