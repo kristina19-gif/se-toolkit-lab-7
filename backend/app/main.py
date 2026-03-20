@@ -1,6 +1,7 @@
 """Learning Management Service — FastAPI application."""
 
 import traceback
+from typing import cast
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,7 +34,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 
 app.add_middleware(
-    CORSMiddleware,
+    cast(type, CORSMiddleware),
     allow_origins=settings.cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],

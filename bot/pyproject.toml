@@ -1,0 +1,21 @@
+[project]
+name = "lms-telegram-bot"
+version = "0.1.0"
+description = "Telegram bot client for the LMS backend"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+  "httpx>=0.28.1",
+  "python-telegram-bot>=22.5",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.2",
+  "ruff>=0.14.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py311"
